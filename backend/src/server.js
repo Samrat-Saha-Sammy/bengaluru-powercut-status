@@ -21,9 +21,7 @@ mongoose
 // Define IoT Data Schema
 const iotDataSchema = new mongoose.Schema({
 	deviceId: String,
-	temperature: Number,
-	humidity: Number,
-	status: String,
+	status: Number,
 	timestamp: { type: Date, default: Date.now },
 });
 
@@ -32,17 +30,12 @@ const IoTData = mongoose.model("IoTData", iotDataSchema);
 // API Route to receive IoT data
 app.post("/api/iot-data", async (req, res) => {
 	try {
-		const { deviceId, temperature, humidity, status } = req.body;
-		if (
-			!deviceId ||
-			temperature === undefined ||
-			humidity === undefined ||
-			!status
-		) {
+		const { deviceId, status } = req.body;
+		if (!deviceId || status === undefined) {
 			return res.status(400).json({ error: "Missing required fields" });
 		}
 
-		const newData = new IoTData({ deviceId, temperature, humidity, status });
+		const newData = new IoTData({ deviceId, status });
 		await newData.save();
 		res.status(201).json({ message: "Data stored successfully" });
 	} catch (error) {

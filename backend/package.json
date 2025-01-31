@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "backend": "node --env-file=.env src/server.js",
+    "dev": "node --env-file=.env --watch src/server.js"
+  },
   "dependencies": {
     "body-parser": "^1.20.3",
     "dotenv": "^16.4.7",
