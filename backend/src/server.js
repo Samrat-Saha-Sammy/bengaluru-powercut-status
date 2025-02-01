@@ -25,7 +25,7 @@ const iotDataSchema = new mongoose.Schema({
 	timestamp: { type: Date, default: Date.now },
 });
 
-const IoTData = mongoose.model("IoTData", iotDataSchema);
+const IoTData = mongoose.model("log", iotDataSchema);
 
 // API Route to receive IoT data
 app.post("/api/iot-data", async (req, res) => {
@@ -37,9 +37,9 @@ app.post("/api/iot-data", async (req, res) => {
 
 		const newData = new IoTData({ deviceId, status });
 		await newData.save();
-		res.status(201).json({ message: "Data stored successfully" });
+		res.status(201).json({ message: "Data stored successfully", ok: true });
 	} catch (error) {
-		res.status(500).json({ error: "Internal server error" });
+		res.status(500).json({ error: "Internal server error", ok: false });
 	}
 });
 
