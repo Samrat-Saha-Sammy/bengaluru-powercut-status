@@ -2,8 +2,6 @@ import YearHistoryGraph from "./yearly_graph/Year_History_Graph.jsx";
 import utils from "../../utils/index";
 import historyData from "./dummy_data.json";
 
-import "./history_graph.css";
-
 const HistoryGraph = () => {
 	const _config = {
 		color: "#6366F1",
