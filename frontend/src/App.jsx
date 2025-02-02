@@ -1,16 +1,11 @@
-import { useState } from "react";
-import "./App.css";
-import YearHistoryGraph from "./components/year_history_graph";
+import HistoryGraph from "./components/history_graph/History_Graph";
 
-function App() {
+const App = () => {
 	return (
-		<>
-			{/* <h1>Bangalore Power-Cut Status</h1> */}
-			<div>
-				<YearHistoryGraph />
-			</div>
-		</>
+		<div className="py-4 px-2 lg:px-0 mx-auto w-full max-w-[1000px]">
+			<HistoryGraph />
+		</div>
 	);
-}
+};
 
 export default App;
