@@ -1,15 +1,16 @@
+import { useMemo } from "react";
 import YearHistoryGraph from "./yearly_graph/Year_History_Graph.jsx";
 import utils from "../../utils/index";
 import historyData from "./dummy_data.json";
 
 const HistoryGraph = () => {
-	const _config = {
-		color: "#6366F1",
-		maxStep: 5,
-		noOfBlocksInYear: 371,
-	};
+	const _BASE_COLOR_SHADE = "#6366F1";
+	const _NO_OF_SHADE = 5;
+	const _YEAR_BLOCK_COUNT = 371;
 
-	const colorRange = utils.color.generateShades(_config.color, _config.maxStep);
+	const colorRange = useMemo(() => {
+		return utils.color.generateShades(_BASE_COLOR_SHADE, _NO_OF_SHADE);
+	}, [_BASE_COLOR_SHADE, _NO_OF_SHADE]);
 
 	return (
 		<div className="py-4 px-3 md:p-8 bg-white dark:bg-slate-900 dark:notion:bg-notion-dark rounded-md w-full ring-1 ring-slate-200 dark:ring-slate-800 dark:notion:ring-zinc-700 dark:notion:text-zinc-200">
@@ -27,7 +28,7 @@ const HistoryGraph = () => {
 					payload={historyData.data}
 					colorRange={colorRange}
 					unit="no_of_cut"
-					yearBlocks={_config.noOfBlocksInYear}
+					yearBlocks={_YEAR_BLOCK_COUNT}
 				/>
 			)}
 
