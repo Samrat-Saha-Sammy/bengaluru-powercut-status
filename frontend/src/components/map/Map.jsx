@@ -7,8 +7,29 @@ function getRandomPastelColor() {
 	return `rgb(${r}, ${g}, ${b})`;
 }
 
+function createGrayShadeGenerator(
+	count = 5,
+	minBrightness = 50,
+	maxBrightness = 200
+) {
+	// Generate 5 random shades of gray
+	const shades = Array.from({ length: count }, () => {
+		const shade =
+			Math.floor(Math.random() * (maxBrightness - minBrightness)) +
+			minBrightness;
+		return `rgb(${shade}, ${shade}, ${shade})`;
+	});
+
+	// Return a function that picks a random shade on each call
+	return function getRandomGrayShade() {
+		return shades[Math.floor(Math.random() * shades.length)];
+	};
+}
+
 const Map = () => {
 	const [mapData, setMapData] = useState();
+
+	const getRandomGray = createGrayShadeGenerator(5, 30, 50);
 
 	// Define a basic projection function (GeoJSON coords -> SVG space)
 	const project = (lon, lat) => {
@@ -30,7 +51,7 @@ const Map = () => {
 
 	return (
 		<div>
-			<svg id="mapSvg" viewBox="293 -230 1650 1600">
+			<svg id="mapSvg" viewBox="293 -230 1650 1600" fill="#343434">
 				{mapData &&
 					mapData.features.map((feature) => {
 						if (feature.geometry.type === "Polygon") {
@@ -53,7 +74,7 @@ const Map = () => {
 												d={pathData}
 												className="area"
 												data-name={feature.properties.name || "Unknown"}
-												fill={getRandomPastelColor()}
+												fill={getRandomGray()}
 												strokeWidth="1"
 											/>
 										);
