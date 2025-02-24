@@ -1,4 +1,12 @@
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+
+function getPathCenter(pathElement) {
+	const bbox = pathElement.getBBox(); // Get bounding box
+	const centerX = bbox.x + bbox.width / 2;
+	const centerY = bbox.y + bbox.height / 2;
+	return { x: centerX, y: centerY };
+}
 
 function getRandomPastelColor() {
 	const r = Math.floor(Math.random() * 156) + 100; // 100-255
@@ -26,10 +34,36 @@ function createGrayShadeGenerator(
 	};
 }
 
+// x: 1611.292724609375, y: 531.6187591552734
+
 const Map = () => {
 	const [mapData, setMapData] = useState();
+	const [activeId, setActiveId] = useState(null);
 
 	const getRandomGray = createGrayShadeGenerator(5, 30, 50);
+
+	// Default position & scale
+
+	let offsetX = 0;
+	let offsetY = 0;
+	let scale = 1;
+	// If an element is active, calculate group movement & zoom
+	if (activeId) {
+		//const centerX = 250 - target.x - 25; // Adjust based on element's size
+		//const centerY = 150 - target.y - 25;
+		offsetX = -1000;
+		offsetY = -1000;
+		scale = 2;
+	} else {
+		offsetX = 0;
+		offsetY = 0;
+		scale = 1;
+	}
+
+	// Function to trigger zoom
+	const triggerZoom = (id) => {
+		setActiveId(activeId === id ? null : id); // Toggle zoom state
+	};
 
 	// Define a basic projection function (GeoJSON coords -> SVG space)
 	const project = (lon, lat) => {
@@ -47,39 +81,53 @@ const Map = () => {
 
 	useEffect(() => {
 		loadGeoJSON();
+		setInterval(() => {
+			triggerZoom("Hudi");
+		}, 3000);
 	}, []);
 
 	return (
 		<div>
 			<svg id="mapSvg" viewBox="293 -230 1650 1600" fill="#343434">
-				{mapData &&
-					mapData.features.map((feature) => {
-						if (feature.geometry.type === "Polygon") {
-							return (
-								<g key={feature.properties.KGISWardNo} stroke="grey">
-									{feature.geometry.coordinates.map((polygon, index) => {
-										let pathData =
-											"M " +
-											polygon
-												.map(([lon, lat]) => {
-													const [x, y] = project(lon, lat);
-													return `${x},${y}`;
-												})
-												.join(" L ") +
-											" Z";
+				<motion.g
+					transform-origin="250 150" // Keep the entire group centered
+					animate={{
+						x: offsetX,
+						y: offsetY,
+						scale: scale,
+					}}
+					transition={{ duration: 0.5 }}
+				>
+					{mapData &&
+						mapData.features.map((feature) => {
+							if (feature.geometry.type === "Polygon") {
+								return (
+									<g key={feature.properties.KGISWardNo} stroke="grey">
+										{feature.geometry.coordinates.map((polygon, index) => {
+											let pathData =
+												"M " +
+												polygon
+													.map(([lon, lat]) => {
+														const [x, y] = project(lon, lat);
+														return `${x},${y}`;
+													})
+													.join(" L ") +
+												" Z";
 
-										return (
-											<path
-												key={feature.properties.KGISWardNo + index}
-												d={pathData}
-												className="area"
-												data-name={feature.properties.name || "Unknown"}
-												fill={getRandomGray()}
-												strokeWidth="1"
-											/>
-										);
-									})}
-									{/* Hidden text
+											return (
+												<path
+													key={feature.properties.KGISWardNo + index}
+													d={pathData}
+													className="area"
+													data-name={
+														feature.properties.KGISWardName || "Unknown"
+													}
+													fill={getRandomGray()}
+													strokeWidth="1"
+												/>
+											);
+										})}
+										{/* Hidden text
 									<text
 										x="100"
 										y="120"
@@ -88,10 +136,11 @@ const Map = () => {
 									>
 										{feature.properties.KGISWardName}
 									</text> */}
-								</g>
-							);
-						}
-					})}
+									</g>
+								);
+							}
+						})}
+				</motion.g>
 			</svg>
 		</div>
 	);
