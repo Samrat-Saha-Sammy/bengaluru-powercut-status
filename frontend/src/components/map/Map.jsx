@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
-function getPathCenter(pathElement) {
-	const bbox = pathElement.getBBox(); // Get bounding box
+function getGroupCenter(groupElement) {
+	const bbox = groupElement.getBBox(); // Get the bounding box
 	const centerX = bbox.x + bbox.width / 2;
 	const centerY = bbox.y + bbox.height / 2;
 	return { x: centerX, y: centerY };
@@ -34,7 +34,7 @@ function createGrayShadeGenerator(
 	};
 }
 
-// x: 1611.292724609375, y: 531.6187591552734
+// x: 1038.5894775390625 y: -50.53900146484375
 
 const Map = () => {
 	const [mapData, setMapData] = useState();
@@ -51,8 +51,8 @@ const Map = () => {
 	if (activeId) {
 		//const centerX = 250 - target.x - 25; // Adjust based on element's size
 		//const centerY = 150 - target.y - 25;
-		offsetX = -1000;
-		offsetY = -1000;
+		offsetX = -1038.58;
+		offsetY = 50.53;
 		scale = 2;
 	} else {
 		offsetX = 0;
@@ -81,9 +81,9 @@ const Map = () => {
 
 	useEffect(() => {
 		loadGeoJSON();
-		setInterval(() => {
-			triggerZoom("Hudi");
-		}, 3000);
+		// setInterval(() => {
+		// 	triggerZoom("Hudi");
+		// }, 3000);
 	}, []);
 
 	return (
@@ -140,6 +140,21 @@ const Map = () => {
 								);
 							}
 						})}
+
+					{
+						// Center Calculated
+
+						// Example usage:
+						// const group = document.getElementById("myGroup");
+						// const center = getGroupCenter(group);
+						// console.log("Group center:", center);
+						<circle
+							r="15"
+							cx="1038.5894775390625"
+							cy="-50.53900146484375"
+							fill="red"
+						/>
+					}
 				</motion.g>
 			</svg>
 		</div>
